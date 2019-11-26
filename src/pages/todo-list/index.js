@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "@reach/router";
 
 import Layout from "../../components/Layout";
 import ListItem from "./ListItem";
+import useTasks from "../../utils/useTasks";
 
 const ALL = "ALL";
 const CHECK = "CHECK";
@@ -9,17 +11,20 @@ const UNCHECK = "UNCHECK";
 
 export default () => {
   const [filter, setFilter] = useState(ALL);
-  const [tasks, setTasks] = useState([
-    { id: 1, checked: true, label: "tache 1" },
-    { id: 2, checked: false, label: "tache 2" }
-  ]);
+  const { tasks, setTasks } = useTasks();
+  const [filteredTasks, setFilteredTasks] = useState(tasks);
+  const [count, setCount] = useState(filteredTasks.length);
 
-  const filteredTasks =
-    filter === ALL
-      ? tasks
-      : tasks.filter(
-          item => item.checked === (filter === CHECK ? true : false)
-        );
+  useEffect(() => {
+    const ft =
+      filter === ALL
+        ? tasks
+        : tasks.filter(
+            item => item.checked === (filter === CHECK ? true : false)
+          );
+    setFilteredTasks(ft);
+    setCount(ft.length);
+  }, [tasks, filter]);
 
   const handleChange = id => {
     const newTasks = tasks.map(element =>
@@ -47,6 +52,7 @@ export default () => {
 
   return (
     <Layout title="To do" author="Valentin">
+      <Link to="/">Go home</Link>
       <input type="text" placeholder="Nouvelle tâche" onKeyPress={handleAdd} />
       <ul>
         {filteredTasks.map(element => (
@@ -64,6 +70,8 @@ export default () => {
         <button onClick={() => setFilter(CHECK)}>Validés</button>
         {" - "}
         <button onClick={() => setFilter(UNCHECK)}>Non validés</button>
+        {" - count : "}
+        {count}
       </footer>
     </Layout>
   );

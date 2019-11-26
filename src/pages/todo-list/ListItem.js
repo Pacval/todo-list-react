@@ -7,7 +7,7 @@ const ListItem = ({ id, checked, label, onChange, onDelete }) => {
         id={id}
         type="checkbox"
         value={true}
-        checked={checked}
+        checked={checked || false}
         onChange={onChange}
       />
       <label htmlFor={id}>{label}</label>
